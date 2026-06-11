@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import expenseRoutes from './routes/expenseRoutes';
 import budgetRoutes from './routes/budgetRoutes';
 import categoryRoutes from './routes/categoryRoutes';
+import goalRoutes from './routes/goalRoutes';
 import { verifyJWT } from './middleware/verifyJWT';
 
 dotenv.config();
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use('/api/expenses',   verifyJWT, expenseRoutes);
 app.use('/api/budgets',    verifyJWT, budgetRoutes);
 app.use('/api/categories', verifyJWT, categoryRoutes);
+app.use('/api/goals',      verifyJWT, goalRoutes);
 
 // Health check
 app.get('/health', (_req, res) => {
