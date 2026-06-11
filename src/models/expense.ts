@@ -14,6 +14,8 @@ export interface Expense {
   amount: number;
   category: Category;
   type: TransactionType;
+  recorrente: boolean;
+  recorrente_id?: string | null;
   date: string;          // ISO: YYYY-MM-DD
   description?: string;
   created_at?: string;
