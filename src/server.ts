@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import expenseRoutes from './routes/expenseRoutes';
+import { verifyJWT } from './middleware/verifyJWT';
 
 dotenv.config();
 
@@ -12,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use('/api/expenses', expenseRoutes);
+app.use('/api/expenses', verifyJWT, expenseRoutes);
 
 // Health check
 app.get('/health', (_req, res) => {

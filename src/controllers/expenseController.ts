@@ -4,10 +4,13 @@ import { CreateExpenseDTO, UpdateExpenseDTO } from '../models/expense';
 
 const TABLE = 'expenses';
 
-export const getAll = async (_req: Request, res: Response): Promise<void> => {
+export const getAll = async (req: Request, res: Response): Promise<void> => {
+  const userId = req.user!.id;
+
   const { data, error } = await supabase
     .from(TABLE)
     .select('*')
+    .eq('user_id', userId)
     .order('date', { ascending: false });
 
   if (error) {
@@ -20,11 +23,13 @@ export const getAll = async (_req: Request, res: Response): Promise<void> => {
 
 export const getById = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
+  const userId = req.user!.id;
 
   const { data, error } = await supabase
     .from(TABLE)
     .select('*')
     .eq('id', id)
+    .eq('user_id', userId)
     .single();
 
   if (error) {
@@ -36,6 +41,7 @@ export const getById = async (req: Request, res: Response): Promise<void> => {
 };
 
 export const create = async (req: Request, res: Response): Promise<void> => {
+  const userId = req.user!.id;
   const body = req.body as CreateExpenseDTO;
 
   if (!body.title || body.amount === undefined || !body.category || !body.date) {
@@ -45,7 +51,7 @@ export const create = async (req: Request, res: Response): Promise<void> => {
 
   const { data, error } = await supabase
     .from(TABLE)
-    .insert([body])
+    .insert([{ ...body, user_id: userId }])
     .select()
     .single();
 
@@ -59,12 +65,14 @@ export const create = async (req: Request, res: Response): Promise<void> => {
 
 export const update = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
+  const userId = req.user!.id;
   const body = req.body as UpdateExpenseDTO;
 
   const { data, error } = await supabase
     .from(TABLE)
     .update(body)
     .eq('id', id)
+    .eq('user_id', userId)
     .select()
     .single();
 
@@ -83,8 +91,13 @@ export const update = async (req: Request, res: Response): Promise<void> => {
 
 export const remove = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
+  const userId = req.user!.id;
 
-  const { error } = await supabase.from(TABLE).delete().eq('id', id);
+  const { error } = await supabase
+    .from(TABLE)
+    .delete()
+    .eq('id', id)
+    .eq('user_id', userId);
 
   if (error) {
     res.status(500).json({ error: error.message });
