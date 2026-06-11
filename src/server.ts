@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import expenseRoutes from './routes/expenseRoutes';
 import budgetRoutes from './routes/budgetRoutes';
+import categoryRoutes from './routes/categoryRoutes';
 import { verifyJWT } from './middleware/verifyJWT';
 
 dotenv.config();
@@ -14,8 +15,9 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use('/api/expenses', verifyJWT, expenseRoutes);
-app.use('/api/budgets', verifyJWT, budgetRoutes);
+app.use('/api/expenses',   verifyJWT, expenseRoutes);
+app.use('/api/budgets',    verifyJWT, budgetRoutes);
+app.use('/api/categories', verifyJWT, categoryRoutes);
 
 // Health check
 app.get('/health', (_req, res) => {
